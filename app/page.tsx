@@ -21,7 +21,7 @@ export default async function Home({
       <h1 className="text-4xl font-bold">TODO</h1>
       <ul className="flex flex-col gap-1 [&>*:nth-child(odd)]:bg-slate-200 rounded">
         {todos.map((todo) => (
-          <li key={todo.id} className="p-1">
+          <li key={todo.id} className="p-2">
             {todo.id} {todo.text}
           </li>
         ))}
