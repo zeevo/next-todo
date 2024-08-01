@@ -1,6 +1,6 @@
 "use server";
 
-import { db, todosTable } from "./db";
+import { db } from "./db";
 import { redirect } from "next/navigation";
 
 export async function createTodo(form: FormData) {
@@ -8,7 +8,7 @@ export async function createTodo(form: FormData) {
 
   if (formData) {
     const text = formData.toString();
-    await db.insert(todosTable).values({ text });
+    await db.insertInto("todos").values({ text }).execute();
   }
 
   redirect("/");

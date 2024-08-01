@@ -1,20 +1,18 @@
-import { sql } from "drizzle-orm";
 import { createTodo } from "./actions";
-import { db, todosTable } from "./db";
 import { SubmitButton } from "./button";
+import { db } from "./db";
 
 export default async function Home({
   searchParams,
 }: {
-  searchParams: { asc?: string };
+  searchParams: { dir?: string };
 }) {
   const todos = await db
-    .select()
-    .from(todosTable)
+    .selectFrom("todos")
+    .orderBy(searchParams.dir === "asc" ? "id asc" : "id desc")
     .limit(10)
-    .orderBy(
-      searchParams.asc ? sql`${todosTable.id} ASC` : sql`${todosTable.id} DESC`
-    );
+    .selectAll()
+    .execute();
 
   return (
     <main className="mt-4 mx-auto max-w-4xl flex flex-col gap-2">

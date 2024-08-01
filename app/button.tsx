@@ -8,7 +8,7 @@ export function SubmitButton() {
   if (pending) {
     return (
       <button
-        className="bg-slate-500 text-slate-100 p-2 rounded min-w-[100px]"
+        className="bg-slate-500 text-slate-100 p-2 rounded min-w-[100px] animate-pulse"
         disabled={pending}
         type="submit"
       >

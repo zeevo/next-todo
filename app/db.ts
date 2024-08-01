@@ -1,14 +1,17 @@
-import { drizzle } from "drizzle-orm/postgres-js";
-import { pgTable, serial, varchar } from "drizzle-orm/pg-core";
-import postgres from "postgres";
+import { Generated, Kysely, PostgresDialect } from "kysely";
+import { Pool } from "pg";
 
-const sql = postgres(process.env.DATABASE_URL!);
+export type Database = {
+  todos: {
+    id: Generated<number>;
+    text: string;
+  };
+};
 
-export const db = drizzle(sql);
-
-export const todosTable = pgTable("todos", {
-  id: serial("id").primaryKey(),
-  text: varchar("text"),
+const dialect = new PostgresDialect({
+  pool: new Pool({ connectionString: process.env.DATABASE_URL }),
 });
 
-export const schema = {};
+export const db = new Kysely<Database>({
+  dialect,
+});
