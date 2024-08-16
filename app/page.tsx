@@ -1,40 +1,53 @@
-import { createTodo } from "./actions";
-import { SubmitButton } from "./button";
-import { db } from "./db";
+import { db } from "@/app/db";
+import { redirect } from "next/navigation";
+
+async function save(form: FormData) {
+  "use server";
+
+  const formData = form.get("text");
+
+  if (formData) {
+    const text = formData.toString();
+    await db.insertInto("todos").values({ text }).execute();
+  }
+
+  redirect("/");
+}
 
 export default async function Home({
   searchParams,
 }: {
-  searchParams: { dir?: string };
+  searchParams: { order: string };
 }) {
   const todos = await db
     .selectFrom("todos")
-    .orderBy(searchParams.dir === "asc" ? "id asc" : "id desc")
-    .limit(10)
     .selectAll()
+    .limit(10)
+    .orderBy(searchParams.order === "desc" ? "id desc" : "id asc")
     .execute();
 
   return (
-    <main className="mt-4 mx-auto max-w-4xl flex flex-col gap-2">
-      <h1 className="text-4xl font-bold">TODO</h1>
-      <ul className="flex flex-col gap-1 [&>*:nth-child(odd)]:bg-slate-200 rounded">
-        {todos.map((todo) => (
-          <li key={todo.id} className="p-2">
-            {todo.id} {todo.text}
-          </li>
-        ))}
-      </ul>
-
-      <form action={createTodo} className="flex gap-2 justify-end">
+    <main className="flex min-h-screen flex-col p-2 gap-2">
+      <h1 className="text-5xl">Todo</h1>
+      <form className="flex gap-2" action={save}>
         <input
           type="text"
           name="text"
-          className="bg-slate-200 rounded p-2"
           autoFocus
           required
+          className="bg-slate-200 rounded p-2 border-slate-400 border"
         />
-        <SubmitButton></SubmitButton>
+        <button className="rounded border border-slate-400 p-2 bg-blue-500 text-slate-50">
+          Add
+        </button>
       </form>
+      {todos.map((todo) => {
+        return (
+          <li key={todo.id}>
+            {todo.id} {todo.text}
+          </li>
+        );
+      })}
     </main>
   );
 }
