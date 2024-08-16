@@ -2,10 +2,7 @@ import { Generated, Kysely, PostgresDialect } from "kysely";
 import { Pool } from "pg";
 
 export interface Database {
-  todos: {
-    id: Generated<number>;
-    text: string;
-  };
+  todos: { id: Generated<number>; text: string };
 }
 
 export const dialect = new PostgresDialect({
